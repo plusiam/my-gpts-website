@@ -3,351 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마샬의 시각으로 본 소득 재분배 정책 분석</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Visualization & Content Choices: 
-        - 슬라이드 1&2 (표지, 마샬 소개): '홈' 섹션 텍스트 콘텐츠로 통합. 마샬 초상화, 수요공급 곡선 등 이미지는 제외하고 텍스트 중심으로 정보 전달. 목표: 정보 제공. 방법: HTML 텍스트. 상호작용: 없음. 정당성: 간결성, 핵심 정보 집중.
-        - 슬라이드 3 (핵심 사상): '마샬의 핵심 사상' 섹션.
-            - 한계효용 체감: 목표: 개념 이해. 방법: 텍스트 설명 + Chart.js 막대 차트 (Y축: 효용, X축: 소비량, 3-4개 막대 감소). 상호작용: 차트 툴팁. 정당성: 추상적 개념의 시각적 보조. 라이브러리: Chart.js.
-            - 효율성과 형평성: 목표: 개념 이해. 방법: 텍스트 + 유니코드 아이콘 ⚖️. 상호작용: 없음. 정당성: 단순 명료한 상징.
-            - 점진주의: 목표: 개념 이해. 방법: 텍스트 + 유니코드 아이콘 🚶‍♂️🪜. 상호작용: 없음. 정당성: 단순 명료한 상징.
-        - 슬라이드 4 (찬성 입장): '주요 논쟁' 섹션 내 '찬성' 탭 콘텐츠. 목표: 주장 전달. 방법: HTML 텍스트 + 유니코드 아이콘 🌱💧. 상호작용: 탭 전환. 정당성: 내용 상징화, 쉬운 비교.
-        - 슬라이드 5 (반대 입장): '주요 논쟁' 섹션 내 '반대' 탭 콘텐츠. 목표: 주장 전달. 방법: HTML 텍스트 + 유니코드 아이콘 😥🏭. 상호작용: 탭 전환. 정당성: 내용 상징화, 쉬운 비교.
-        - 슬라이드 6 (종합적 입장): '종합적 견해' 섹션 콘텐츠. 목표: 종합적 이해. 방법: HTML 텍스트 목록 + 유니코드 아이콘 ⚖️, 🚶‍♂️🪜, 💡, 🤝. 상호작용: 없음. 정당성: 핵심 요점 명확화.
-        - 슬라이드 7 (결론 및 시사점): '결론' 섹션 콘텐츠. 목표: 요약 및 적용. 방법: HTML 텍스트 + 유니코드 아이콘 🚀. 상호작용: 없음. 정당성: 미래지향적 메시지 전달.
-        - 슬라이드 8 (Q&A): SPA 콘텐츠에 미적용.
-        - 모든 시각적 요소는 유니코드 문자 또는 Chart.js 캔버스 차트로 구현하여 SVG/래스터 이미지 사용을 피함.
-    -->
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .nav-link { transition: all 0.3s ease; }
-        .nav-link.active { color: #0D9488; border-bottom: 2px solid #0D9488; font-weight: 600;}
-        .content-section { display: none; }
-        .content-section.active { display: block; }
-        .tab-button.active { background-color: #0D9488; color: white; }
-        .card { background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); padding: 1.5rem; margin-bottom: 1.5rem; }
-        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
-        h2 { font-size: 1.75rem; font-weight: 600; margin-bottom: 1rem; color: #115E59; }
-        h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: #134E4A; }
-        .accent-text { color: #0D9488; font-weight: 600; }
-        .icon-style { font-size: 1.5rem; margin-right: 0.5rem; vertical-align: middle; }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'warm-neutral-bg': '#FFFBEB', // bg-amber-50
-                        'text-primary': '#374151', // text-gray-700
-                        'text-secondary': '#4B5563', // text-gray-600
-                        'accent-teal': '#0D9488', // teal-600
-                        'accent-teal-dark': '#115E59', // teal-800
-                        'accent-teal-light': '#CCFBF1', // teal-100
-                    },
-                    fontFamily: {
-                        sans: ['Nanum Gothic', 'Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <title>룰루랄라 한기쌤의 GPTs 모음</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-warm-neutral-bg text-text-primary leading-relaxed">
-
-    <header class="bg-accent-teal-dark text-white py-6 shadow-md">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl font-bold">마샬의 시각으로 본 소득 재분배 정책 분석</h1>
-            <p class="text-lg mt-1">효율성과 형평성의 조화는 가능한가?</p>
-        </div>
+<body>
+    <header>
+        <h1>룰루랄라 한기쌤의 GPTs 모음</h1>
+        <p>제가 만든 다양한 GPTs입니다. 여러분의 작업과 학습에 도움이 되기를 바랍니다. 클릭하여 새 창에서 사용해보세요!</p>
     </header>
 
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4">
-            <ul class="flex justify-center space-x-4 sm:space-x-8 py-3 text-sm sm:text-base">
-                <li><a href="#home" class="nav-link px-2 py-2 hover:text-accent-teal active" onclick="showSection('home', this)">홈</a></li>
-                <li><a href="#ideas" class="nav-link px-2 py-2 hover:text-accent-teal" onclick="showSection('ideas', this)">마샬의 핵심 사상</a></li>
-                <li><a href="#debate" class="nav-link px-2 py-2 hover:text-accent-teal" onclick="showSection('debate', this)">주요 논쟁</a></li>
-                <li><a href="#synthesis" class="nav-link px-2 py-2 hover:text-accent-teal" onclick="showSection('synthesis', this)">종합적 견해</a></li>
-                <li><a href="#conclusion" class="nav-link px-2 py-2 hover:text-accent-teal" onclick="showSection('conclusion', this)">결론 및 시사점</a></li>
-            </ul>
-        </div>
-    </nav>
+    <main>
+        <section id="gpts-list">
+            <h2>나의 GPTs 목록</h2>
 
-    <main class="container mx-auto p-4 sm:p-8">
-        <section id="home" class="content-section active">
-            <div class="card">
-                <h2 class="text-center">토론의 장에 오신 것을 환영합니다</h2>
-                <p class="mt-4 text-text-secondary text-center">본 애플리케이션은 경제학자 알프레드 마샬의 사상을 통해 현대 사회의 중요한 화두인 '소득 재분배 정책'을 다각도로 분석하고 탐구합니다. 소득 재분배는 시장의 효율성을 저해하는 요소일까요, 아니면 시장 실패를 보완하고 사회 전체의 후생을 증진하는 기제일까요? 마샬의 통찰을 빌려 이 복잡한 질문에 대한 답을 함께 모색해보고자 합니다. 이 섹션에서는 토론의 배경과 핵심 인물인 알프레드 마샬을 간략히 소개합니다.</p>
+            <div class="gpt-item">
+                <h3>1. 토론이 (Toroni)</h3>
+                <p>특정 주제에 대한 심도 있는 토론을 도와주는 GPT입니다. 다양한 관점을 탐색하고 논리적인 주장을 펼치는 데 활용해보세요.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-6828ff69d0b8819186d88a51f50f9dc5-toroni-2025-5-18">토론이 사용하기</button>
             </div>
-            <div class="grid md:grid-cols-2 gap-6 mt-6">
-                <div class="card">
-                    <h3>토론 주제</h3>
-                    <p class="mt-2 text-text-secondary">"소득 재분배 정책은 <span class="accent-text">시장의 효율성</span>을 해친다 vs <span class="accent-text">시장 실패</span>를 보완한다"</p>
-                    <p class="mt-2 text-text-secondary">정부의 저소득층 지원 확대, 경제 전체에 미치는 영향은 과연 무엇일까요?</p>
-                </div>
-                <div class="card">
-                    <h3>알프레드 마샬 (Alfred Marshall, 1842-1924)</h3>
-                    <p class="mt-2 text-text-secondary">근대 경제학의 아버지 중 한 명으로 불리는 마샬은 경제학의 과학적 토대를 마련하는 데 크게 기여했습니다.</p>
-                    <ul class="mt-3 list-disc list-inside text-text-secondary space-y-1">
-                        <li><span class="font-semibold">주요 개념:</span> 효용, 한계효용, 수요와 공급, 시장 균형</li>
-                        <li><span class="font-semibold">주요 관심사:</span> 빈곤 문제 해결, 국민 후생 증진, 인간 조건의 점진적 개선</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
 
-        <section id="ideas" class="content-section">
-            <div class="card">
-                <h2 class="text-center">마샬의 핵심 사상 이해하기</h2>
-                <p class="mt-4 text-text-secondary text-center">알프레드 마샬의 경제 사상은 소득 재분배 논의에 깊이 있는 관점을 제공합니다. 그의 이론 중 특히 중요한 세 가지 핵심 아이디어는 '한계효용 체감의 법칙', '효율성과 형평성의 조화 추구', 그리고 '점진주의적 접근'입니다. 이 사상들은 그가 소득 불평등 문제를 어떻게 바라보고 해결책을 모색했는지 이해하는 데 중요한 열쇠가 됩니다. 각 개념이 소득 재분배 정책과 어떻게 연결되는지 살펴보겠습니다.</p>
+            <div class="gpt-item">
+                <h3>2. RubriCoach</h3>
+                <p>교육 평가 루브릭(Rubric) 생성을 도와주는 코칭 GPT입니다. 효과적인 평가 기준을 설정하고 싶을 때 사용해보세요.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-67f72dbe2b948191a1fc1ac7f6cb182f-rubricoach-2025-04-09">RubriCoach 사용하기</button>
             </div>
-            <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                <div class="card">
-                    <h3><span class="icon-style">📉</span>한계효용 체감의 법칙</h3>
-                    <p class="text-text-secondary">같은 재화라도 소비량이 늘어날수록 추가적으로 얻는 만족(효용)은 감소한다는 원리입니다.</p>
-                    <p class="mt-2 text-text-secondary"><span class="font-semibold">소득 재분배 시사점:</span> 동일한 금액이라도 고소득층보다 저소득층에게 더 큰 효용을 줄 수 있습니다. 이는 사회 전체의 총효용을 증가시킬 가능성을 시사합니다.</p>
-                    <div class="mt-4 chart-container">
-                        <canvas id="marginalUtilityChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3><span class="icon-style">⚖️</span>효율성과 형평성의 조화</h3>
-                    <p class="text-text-secondary">마샬은 시장의 효율성을 중시했지만, 동시에 빈곤과 불평등 문제 해결에도 깊은 관심을 가졌습니다. 그는 극단적인 불평등이 사회 전체의 안녕을 저해할 수 있다고 보았습니다.</p>
-                    <blockquote class="mt-3 p-3 bg-accent-teal-light text-accent-teal-dark border-l-4 border-accent-teal rounded-md">
-                        "경제학의 주된 목적은 빈곤을 해결하는 것"
-                    </blockquote>
-                </div>
-                <div class="card">
-                    <h3><span class="icon-style">🚶‍♂️🪜</span>점진주의 (Natura non facit saltum)</h3>
-                    <p class="text-text-secondary">"자연은 비약하지 않는다"는 라틴어 경구처럼, 마샬은 급격한 사회 변화보다는 점진적이고 신중한 개선을 선호했습니다. 이는 정책 결정에 있어서도 중요한 원칙으로 작용합니다.</p>
-                </div>
-            </div>
-        </section>
 
-        <section id="debate" class="content-section">
-            <div class="card">
-                <h2 class="text-center">소득 재분배, 찬성과 반대의 논리</h2>
-                <p class="mt-4 text-text-secondary text-center">소득 재분배 정책은 경제적 효율성과 사회적 형평성 사이에서 끊임없는 논쟁의 대상이 되어 왔습니다. 마샬의 경제학적 관점을 통해 이러한 정책이 시장 실패를 보완하고 경제에 긍정적인 영향을 미칠 수 있다는 찬성 측의 논리와, 반대로 시장의 효율성을 해치고 경제 성장을 저해할 수 있다는 반대 측의 논리를 심층적으로 탐구해봅니다. 각 입장이 마샬의 어떤 사상에 기반하고 있는지, 그리고 그 근거는 무엇인지 살펴보겠습니다.</p>
+            <div class="gpt-item">
+                <h3>3. 룰루랄라 한기쌤의 개념기반 깊이 있는 학습 설계</h3>
+                <p>개념 중심의 깊이 있는 학습 활동 설계를 지원합니다. 창의적이고 의미 있는 수업을 계획하는 데 도움을 받을 수 있습니다.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-67f5c04fe42881918bdbfa5e2e442bff-rulruralra-hangissaemyi-gaenyeomgiban-gipi-issneun-hagseub-seolgye-2025-05-08-eobdeiteu">학습 설계 GPT 사용하기</button>
             </div>
-            <div class="mt-6">
-                <div class="flex justify-center mb-6 space-x-2">
-                    <button class="tab-button px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 active" onclick="showTab('pro', this)">찬성 입장 <span class="icon-style text-sm">👍</span></button>
-                    <button class="tab-button px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300" onclick="showTab('con', this)">반대 입장 <span class="icon-style text-sm">👎</span></button>
-                </div>
 
-                <div id="pro" class="tab-content active">
-                    <div class="card">
-                        <h3><span class="icon-style">🌱</span>찬성: "소득 재분배는 시장 실패를 보완하고 경제에 도움이 된다"</h3>
-                        <div class="grid md:grid-cols-2 gap-6 mt-4">
-                            <div>
-                                <h4 class="font-semibold text-accent-teal-dark">찬성 측 주요 논리</h4>
-                                <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                                    <li>저소득층 지원은 한계소비성향이 높아 소비 증대 및 유효수요 창출로 경제 활성화에 기여합니다.</li>
-                                    <li>복지는 단순 비용이 아닌 인적 자본 형성, 사회 안정 등 '미래를 위한 투자'입니다.</li>
-                                    <li>정보 비대칭, 외부 효과 등 시장 실패 영역에서 정부의 개입은 필요합니다.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-accent-teal-dark">마샬의 시각에서 본다면</h4>
-                                <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                                    <li><span class="accent-text">한계효용 체감 법칙</span>에 부합: 저소득층 지원이 사회 총효용을 높일 수 있다는 점에 주목했을 것입니다.</li>
-                                    <li><span class="accent-text">인간 개발의 중요성</span>: 단순 금전 지원보다 교육, 건강 등 저소득층의 '능력' 향상 복지를 긍정적으로 평가했을 가능성이 높습니다 (장기적 생산성 향상).</li>
-                                    <li><span class="accent-text">시장 실패 보완 역할</span> 인정: 극심한 빈곤이나 질병 등은 개인의 노력만으로 해결하기 어렵다는 점을 인지하고, 정부 역할을 일부 인정했을 것입니다.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="gpt-item">
+                <h3>4. 놀이 파파 (NoliPapa)</h3>
+                <p>아이들과 함께 할 즐거운 놀이 아이디어를 찾고 계신가요? 놀이 파파가 다양한 놀이 활동을 추천해드립니다.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-67d8ce72888481919055c6926f0b8d95-nolipapa-2025-03-18">놀이 파파 사용하기</button>
+            </div>
 
-                <div id="con" class="tab-content" style="display: none;">
-                     <div class="card">
-                        <h3><span class="icon-style">😥</span>반대: "소득 재분배는 시장의 효율성을 해친다"</h3>
-                        <div class="grid md:grid-cols-2 gap-6 mt-4">
-                            <div>
-                                <h4 class="font-semibold text-accent-teal-dark">반대 측 주요 논리</h4>
-                                <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                                    <li>복지 지출 확대는 정부 재정 부담을 증가시키고, 고소득층의 세금 인상을 초래합니다.</li>
-                                    <li>세금 증가는 노동 및 투자 의욕을 저하시켜 시장 효율성을 해치고 경제 성장을 둔화시킬 수 있습니다.</li>
-                                    <li>과도한 통화 확대는 인플레이션을 유발하고 비효율적 자원 배분을 야기할 수 있습니다.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-accent-teal-dark">마샬의 시각에서 본다면</h4>
-                                <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                                    <li><span class="accent-text">시장 효율성 중시</span>: 과도한 정부 개입이나 세금은 개인의 자유로운 경제 활동과 기업가 정신을 위축시켜 시장 효율성을 저해할 수 있음을 우려했을 것입니다.</li>
-                                    <li><span class="accent-text">노동과 저축에 대한 유인</span>: 높은 세금은 근로 의욕과 저축 유인을 감소시켜 자본 축적을 방해하고 장기적 경제 성장에 부정적 영향을 줄 수 있다는 점에 동의했을 것입니다.</li>
-                                    <li><span class="accent-text">재정 건전성 및 인플레이션 경계</span>: 무분별한 지출 확대는 재정 건전성을 해치고 인플레이션을 유발하여 경제 안정을 위협할 수 있음을 경고했을 것입니다.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="gpt-item">
+                <h3>5. 수업 성찰 - 프리즘 PRISM</h3>
+                <p>수업 후 성찰 과정을 돕는 GPT입니다. PRISM 프레임워크를 활용하여 수업을 분석하고 개선점을 찾아보세요.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-67ce50fe1f8481919c4a1ab60773a88c-peurijeum-prism-2025-03-10">수업 성찰 GPT 사용하기</button>
             </div>
-        </section>
 
-        <section id="synthesis" class="content-section">
-            <div class="card">
-                <h2 class="text-center">마샬의 종합적 입장과 정책 제언</h2>
-                <p class="mt-4 text-text-secondary text-center">알프레드 마샬은 소득 재분배 문제에 대해 어느 한쪽에 치우치지 않는 균형 잡힌 시각을 견지했습니다. 그는 재분배의 필요성을 인정하면서도 그 방법과 정도에 대해서는 매우 신중한 접근을 요구했습니다. 마샬이 제시했을 법한 정책 제언들은 오늘날 우리 사회의 복지 정책 수립에도 중요한 지침을 제공합니다. 그의 종합적인 입장과 구체적인 정책 방향을 살펴보겠습니다.</p>
+            <div class="gpt-item">
+                <h3>6. 입시나비 2026</h3>
+                <p>2026학년도 대학 입시 전형에 대한 정보를 제공하고 맞춤형 입시 전략 수립을 도와주는 GPT입니다.</p>
+                <button class="gpt-link" data-link="https://chatgpt.com/g/g-6766a2fa82248191980b7a4787e1eb1d-ibsinabi-2026">입시나비 2026 사용하기</button>
             </div>
-            <div class="grid md:grid-cols-2 gap-6 mt-6">
-                <div class="card">
-                    <h3><span class="icon-style">⚖️</span>균형 잡힌 시각</h3>
-                    <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li>소득 재분배의 '필요성'은 인정하나, '방법과 정도'에 대해서는 매우 신중한 접근을 요구합니다.</li>
-                        <li>극단적인 자유방임도, 급진적인 국가 개입도 경계했습니다.</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3><span class="icon-style">🚶‍♂️🪜</span>점진적이고 신중한 정책 설계</h3>
-                     <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li>정책은 명확한 목표, 대상, 시기를 가져야 합니다.</li>
-                        <li>충분한 경제학적 분석과 사회적 합의를 바탕으로 점진적으로 시행되어야 합니다.</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3><span class="icon-style">💡</span>단순 현금 지원보다는 '능력' 향상 지원</h3>
-                    <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li>교육 기회 확대, 기술 훈련, 건강 개선 등 빈곤층의 자립 능력과 생산성을 높이는 방향의 복지 정책을 선호했을 것입니다.</li>
-                    </ul>
-                    <blockquote class="mt-3 p-3 bg-accent-teal-light text-accent-teal-dark border-l-4 border-accent-teal rounded-md">
-                        "가난한 사람들에게 물고기를 주는 것보다 물고기 잡는 법을 가르쳐야 한다." (마샬의 사상과 부합하는 격언)
-                    </blockquote>
-                </div>
-                <div class="card">
-                    <h3><span class="icon-style">🤝</span>민간의 역할과 자조(自助) 정신 강조</h3>
-                    <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li>자선 활동, 협동조합 등 민간 부문의 자발적인 노력과 개인의 책임감 있는 행동을 중시했습니다.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
 
-        <section id="conclusion" class="content-section">
-            <div class="card">
-                <h2 class="text-center">결론 및 현대 사회에 주는 시사점 <span class="icon-style">🚀</span></h2>
-                <p class="mt-4 text-text-secondary text-center">알프레드 마샬의 시각을 통해 소득 재분배 정책을 고찰해 본 결과, 그의 접근 방식은 오늘날 우리 사회가 직면한 여러 도전 과제에 중요한 통찰을 제공합니다. 마샬은 단순한 부의 이전을 넘어 사회 전체의 후생 증진을 목표로 삼았으며, 시장 효율성을 과도하게 저해하지 않는 범위 내에서 신중하고 점진적인 방법, 특히 능력 향상 지원 중심의 정책을 강조했습니다. 그의 사상은 현대 사회의 복지 정책 논의에 깊이 있는 방향성을 제시합니다.</p>
-            </div>
-            <div class="grid md:grid-cols-2 gap-6 mt-6">
-                <div class="card">
-                    <h3>마샬의 시각으로 본 소득 재분배 요약</h3>
-                    <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li><span class="font-semibold">목표:</span> 사회 전체의 후생 증진 (단순한 부의 이전이 아님)</li>
-                        <li><span class="font-semibold">조건:</span> 시장 효율성을 과도하게 저해하지 않는 범위 내에서</li>
-                        <li><span class="font-semibold">방법:</span> 신중한 설계, 점진적 시행, 능력 향상 지원 중심</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>현대 사회에 주는 시사점</h3>
-                    <ul class="list-disc list-inside mt-2 text-text-secondary space-y-1">
-                        <li>소득 불균형 심화 문제에 대한 지속적인 고민이 필요합니다.</li>
-                        <li>복지 정책 설계 시 경제적 효율성과 사회적 형평성 간의 균형점을 찾는 노력이 중요합니다.</li>
-                        <li>지속 가능한 복지 시스템 구축을 위한 장기적 관점과 신중한 접근이 요구됩니다.</li>
-                    </ul>
-                </div>
-            </div>
         </section>
     </main>
 
-    <footer class="bg-accent-teal-dark text-white text-center py-8 mt-12">
-        <p>&copy; 2024 마샬 경제학 연구. 모든 권리 보유.</p>
-        <p class="text-sm mt-1">본 자료는 교육적 목적으로 제작되었습니다.</p>
+    <footer>
+        <p>&copy; 2025 룰루랄라 한기쌤. All rights reserved.</p>
     </footer>
 
-    <script>
-        const sections = document.querySelectorAll('.content-section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        function showSection(sectionId, clickedLink) {
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-            });
-            clickedLink.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showTab(tabId, clickedButton) {
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-                content.classList.remove('active');
-            });
-            document.getElementById(tabId).style.display = 'block';
-            document.getElementById(tabId).classList.add('active');
-            
-            tabButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-            clickedButton.classList.add('active');
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            showSection('home', document.querySelector('.nav-link[href="#home"]'));
-            showTab('pro', document.querySelector('.tab-button'));
-
-            const ctx = document.getElementById('marginalUtilityChart');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['첫 번째 단위', '두 번째 단위', '세 번째 단위', '네 번째 단위'],
-                        datasets: [{
-                            label: '추가 효용',
-                            data: [10, 7, 4, 2],
-                            backgroundColor: [
-                                'rgba(13, 148, 136, 0.7)', // accent-teal
-                                'rgba(13, 148, 136, 0.6)',
-                                'rgba(13, 148, 136, 0.5)',
-                                'rgba(13, 148, 136, 0.4)'
-                            ],
-                            borderColor: [
-                                'rgba(13, 148, 136, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: '효용 크기'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: '재화 소비량'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return ' 추가 효용: ' + context.parsed.y;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
