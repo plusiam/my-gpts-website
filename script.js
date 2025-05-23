@@ -240,45 +240,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // QR 코드 생성 (간단한 구현)
-    function generateQRCode(text, canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = 120;
-        canvas.height = 120;
-        
-        // 간단한 QR 패턴 그리기
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, 120, 120);
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(10, 10, 100, 100);
-        ctx.fillStyle = '#000';
-        
-        // QR 코드 패턴 시뮬레이션
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                if (Math.random() > 0.5) {
-                    ctx.fillRect(10 + i * 10, 10 + j * 10, 10, 10);
-                }
-            }
-        }
-        
-        // 중앙에 텍스트
-        ctx.fillStyle = '#fff';
-        ctx.font = '8px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('QR Code', 60, 65);
-    }
+    // QR 코드 생성 (Google API 사용)
+function generateQRCode(text, canvas) {
+    console.log('🔄 QR 코드 생성 시작:', text);
+    
+    // Canvas 대신 img 태그 사용
+    const container = canvas.parentElement;
+    container.innerHTML = ''; // 기존 canvas 제거
+    
+    // Google API로 QR 코드 생성
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(text)}`;
+    
+    const img = document.createElement('img');
+    img.src = qrUrl;
+    img.alt = 'QR Code for ' + text;
+    img.style.width = '120px';
+    img.style.height = '120px';
+    img.style.border = '1px solid #ddd';
+    img.style.borderRadius = '8px';
+    
+    // 로딩 상태 표시
+    img.onload = function() {
+        console.log('✅ QR 코드 로드 완료!');
+    };
+    
+    img.onerror = function() {
+        console.error('❌ QR 코드 로드 실패');
+        // 에러 시 대체 텍스트
+        container.innerHTML = `
+            <div style="width:120px;height:120px;background:#ff4444;color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;font-size:12px;">
+                QR 생성<br>실패
+            </div>
+        `;
+    };
+    
+    container.appendChild(img);
+}
 
     // QR 코드 초기화
-    function initQRCodes() {
-        document.querySelectorAll('.qr-code canvas').forEach(canvas => {
-            const url = canvas.closest('.qr-code').dataset.url;
-            if (url) {
-                generateQRCode(url, canvas);
+function initQRCodes() {
+    document.querySelectorAll('.qr-code').forEach(qrContainer => {
+        const url = qrContainer.dataset.url;
+        if (url) {
+            // 기존 canvas를 임시 div로 교체
+            const canvas = qrContainer.querySelector('canvas');
+            if (canvas) {
+                const tempDiv = document.createElement('div');
+                canvas.parentNode.replaceChild(tempDiv, canvas);
+                generateQRCode(url, tempDiv);
             }
-        });
-    }
-
+        }
+    });
+}
     // 모달이 생성될 때마다 QR 코드 초기화
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
