@@ -209,6 +209,10 @@ main {
     background: linear-gradient(135deg, #ffc107, #fd7e14);
 }
 
+.mindfulness-icon {
+    background: linear-gradient(135deg, #e91e63, #f06292);
+}
+
 .admission-icon {
     background: linear-gradient(135deg, #6f42c1, #e83e8c);
 }
@@ -237,6 +241,11 @@ main {
 .play-badge {
     background-color: #fff3cd;
     color: #856404;
+}
+
+.mindfulness-badge {
+    background-color: #fce4ec;
+    color: #880e4f;
 }
 
 .admission-badge {
@@ -289,6 +298,15 @@ main {
 
 .play-btn:hover {
     background: linear-gradient(135deg, #e0a800, #e86100);
+    transform: translateY(-2px);
+}
+
+.mindfulness-btn {
+    background: linear-gradient(135deg, #e91e63, #f06292);
+}
+
+.mindfulness-btn:hover {
+    background: linear-gradient(135deg, #c2185b, #e91e63);
     transform: translateY(-2px);
 }
 
