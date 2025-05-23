@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://plusiam.github.io/my-gpts-website/sitemap.xml
+
+# Allow search engines to crawl all content
+# This website contains educational GPT resources by 룰루랄라 한기쌤
