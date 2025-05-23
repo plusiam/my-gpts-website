@@ -183,43 +183,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 앱에서 열기 시도 (수정된 버전)
+    // ✅ 수정된 앱에서 열기 함수 (간단한 버전)
     window.tryOpenInApp = function(url, modalId) {
-        console.log('Opening in app:', url); // 디버깅용
+        console.log('Opening link:', url);
         
-        if (isIOS) {
-            // iOS 딥링크 시도 - 정확한 URL 사용
-            const iOSDeepLink = url.replace('https://chatgpt.com', 'chatgpt:');
-            console.log('iOS Deep Link:', iOSDeepLink); // 디버깅용
-            
-            // 시도 1: 딥링크
-            window.location = iOSDeepLink;
-            
-            // 1.5초 후 앱이 안 열리면 웹으로
-            setTimeout(() => {
-                window.open(url, '_blank');
-            }, 1500);
-        } else if (isAndroid) {
-            // Android Intent 시도 - 정확한 URL 경로 사용
-            const gptPath = url.split('chatgpt.com')[1];
-            const androidIntent = `intent://chat${gptPath}#Intent;scheme=chatgpt;package=com.openai.chatgpt;end`;
-            console.log('Android Intent:', androidIntent); // 디버깅용
-            
-            try {
-                window.location = androidIntent;
-            } catch (e) {
-                console.log('Intent failed, opening in web');
-                window.open(url, '_blank');
-            }
-            
-            // 1.5초 후 앱이 안 열리면 웹으로
-            setTimeout(() => {
-                window.open(url, '_blank');
-            }, 1500);
-        } else {
-            // 기타 환경에서는 웹으로
-            window.open(url, '_blank');
-        }
+        // 모바일 브라우저가 자동으로 앱 연결 처리
+        // ChatGPT 앱이 설치되어 있으면 자동으로 앱에서 열림
+        window.open(url, '_blank');
         
         // 모달 닫기
         const modal = document.getElementById(modalId);
@@ -241,57 +211,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // QR 코드 생성 (Google API 사용)
-function generateQRCode(text, canvas) {
-    console.log('🔄 QR 코드 생성 시작:', text);
-    
-    // Canvas 대신 img 태그 사용
-    const container = canvas.parentElement;
-    container.innerHTML = ''; // 기존 canvas 제거
-    
-    // Google API로 QR 코드 생성
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(text)}`;
-    
-    const img = document.createElement('img');
-    img.src = qrUrl;
-    img.alt = 'QR Code for ' + text;
-    img.style.width = '120px';
-    img.style.height = '120px';
-    img.style.border = '1px solid #ddd';
-    img.style.borderRadius = '8px';
-    
-    // 로딩 상태 표시
-    img.onload = function() {
-        console.log('✅ QR 코드 로드 완료!');
-    };
-    
-    img.onerror = function() {
-        console.error('❌ QR 코드 로드 실패');
-        // 에러 시 대체 텍스트
-        container.innerHTML = `
-            <div style="width:120px;height:120px;background:#ff4444;color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;font-size:12px;">
-                QR 생성<br>실패
-            </div>
-        `;
-    };
-    
-    container.appendChild(img);
-}
+    function generateQRCode(text, canvas) {
+        console.log('🔄 QR 코드 생성 시작:', text);
+        
+        // Canvas 대신 img 태그 사용
+        const container = canvas.parentElement;
+        container.innerHTML = ''; // 기존 canvas 제거
+        
+        // Google API로 QR 코드 생성
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(text)}`;
+        
+        const img = document.createElement('img');
+        img.src = qrUrl;
+        img.alt = 'QR Code for ' + text;
+        img.style.width = '120px';
+        img.style.height = '120px';
+        img.style.border = '1px solid #ddd';
+        img.style.borderRadius = '8px';
+        
+        // 로딩 상태 표시
+        img.onload = function() {
+            console.log('✅ QR 코드 로드 완료!');
+        };
+        
+        img.onerror = function() {
+            console.error('❌ QR 코드 로드 실패');
+            // 에러 시 대체 텍스트
+            container.innerHTML = `
+                <div style="width:120px;height:120px;background:#ff4444;color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;font-size:12px;">
+                    QR 생성<br>실패
+                </div>
+            `;
+        };
+        
+        container.appendChild(img);
+    }
 
     // QR 코드 초기화
-function initQRCodes() {
-    document.querySelectorAll('.qr-code').forEach(qrContainer => {
-        const url = qrContainer.dataset.url;
-        if (url) {
-            // 기존 canvas를 임시 div로 교체
-            const canvas = qrContainer.querySelector('canvas');
-            if (canvas) {
-                const tempDiv = document.createElement('div');
-                canvas.parentNode.replaceChild(tempDiv, canvas);
-                generateQRCode(url, tempDiv);
+    function initQRCodes() {
+        document.querySelectorAll('.qr-code').forEach(qrContainer => {
+            const url = qrContainer.dataset.url;
+            if (url) {
+                // 기존 canvas를 임시 div로 교체
+                const canvas = qrContainer.querySelector('canvas');
+                if (canvas) {
+                    const tempDiv = document.createElement('div');
+                    canvas.parentNode.replaceChild(tempDiv, canvas);
+                    generateQRCode(url, tempDiv);
+                }
             }
-        }
-    });
-}
+        });
+    }
+
     // 모달이 생성될 때마다 QR 코드 초기화
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
