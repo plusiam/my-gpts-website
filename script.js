@@ -20,8 +20,83 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // GPT 접근 방식 처리
+    // ✅ 수정된 GPT 접근 방식 처리 (입시나비 면책 조항 포함)
     function handleGPTAccess(link, gptName) {
+        // 입시나비의 경우 면책 조항 먼저 표시
+        if (gptName.includes('입시나비')) {
+            showAdmissionDisclaimer(link, gptName);
+        } else {
+            // 다른 GPT는 기존대로
+            if (isMobile) {
+                showMobileAccessModal(link, gptName);
+            } else {
+                showDesktopAccessModal(link, gptName);
+            }
+        }
+    }
+
+    // ✅ 새로운 입시나비 면책 조항 모달
+    function showAdmissionDisclaimer(link, gptName) {
+        const modal = document.createElement('div');
+        modal.className = 'access-modal';
+        const modalId = 'admission-disclaimer-' + Date.now();
+        modal.id = modalId;
+        
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⚠️ ${gptName} 사용 전 안내</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <h4 style="color: #856404; margin-top: 0;">
+                            📢 중요한 안내사항
+                        </h4>
+                        <ul style="color: #856404; margin: 15px 0; padding-left: 20px;">
+                            <li><strong>참고용 정보</strong>입니다. 정확한 입시 정보는 각 대학의 최신 모집요강을 확인하세요.</li>
+                            <li><strong>개별 상황</strong>에 따라 결과가 달라질 수 있습니다.</li>
+                            <li><strong>최종 입시 결정</strong>은 반드시 학교 진로상담교사나 입시 전문가와 상의하시기 바랍니다.</li>
+                            <li>본 GPT가 제공하는 정보에 대해 <strong>어떠한 책임도 지지 않습니다</strong>.</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <p style="margin-bottom: 20px; color: #666;">
+                            위 내용을 확인하셨으면 계속 진행하세요.
+                        </p>
+                        <button class="access-btn primary" onclick="proceedToAdmission('${link}', '${gptName}', '${modalId}')" style="margin-right: 10px;">
+                            <i class="fas fa-check"></i> 동의하고 계속하기
+                        </button>
+                        <button class="access-btn secondary" onclick="document.getElementById('${modalId}').remove()">
+                            <i class="fas fa-times"></i> 취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 모달 닫기 이벤트
+        modal.querySelector('.close-modal').addEventListener('click', () => {
+            modal.remove();
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+
+        document.body.appendChild(modal);
+        modal.style.display = 'flex';
+    }
+
+    // ✅ 새로운 입시나비 진행 함수
+    window.proceedToAdmission = function(link, gptName, disclaimerId) {
+        // 면책 조항 모달 닫기
+        const disclaimerModal = document.getElementById(disclaimerId);
+        if (disclaimerModal) {
+            disclaimerModal.remove();
+        }
+        
+        // 기존 모달 표시
         if (isMobile) {
             showMobileAccessModal(link, gptName);
         } else {
@@ -183,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ✅ 수정된 앱에서 열기 함수 (간단한 버전)
+    // 앱에서 열기 함수 (간단한 버전)
     window.tryOpenInApp = function(url, modalId) {
         console.log('Opening link:', url);
         
@@ -198,9 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 웹에서 열기 (수정된 버전)
+    // 웹에서 열기
     window.openInWeb = function(url, modalId) {
-        console.log('Opening in web:', url); // 디버깅용
+        console.log('Opening in web:', url);
         window.open(url, '_blank');
         
         // 모달 닫기
