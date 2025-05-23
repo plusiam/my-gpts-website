@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function createAccessModal(gptName, deviceType, link) {
         const modal = document.createElement('div');
         modal.className = 'access-modal';
+        
+        // 고유 ID 생성 (링크 충돌 방지)
+        const modalId = 'modal-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        modal.id = modalId;
+        
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
@@ -54,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="close-modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    ${getModalContent(deviceType, link, gptName)}
+                    ${getModalContent(deviceType, link, gptName, modalId)}
                 </div>
             </div>
         `;
@@ -71,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 디바이스별 모달 콘텐츠
-    function getModalContent(deviceType, link, gptName) {
+    function getModalContent(deviceType, link, gptName, modalId) {
         if (deviceType === 'mobile') {
             return `
                 <div class="device-detection">
@@ -111,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fab fa-google-play"></i> Google Play
                             </a>` : ''}
                         </div>
-                        <button class="access-btn primary" onclick="tryOpenInApp('${link}')">
+                        <button class="access-btn primary" onclick="tryOpenInApp('${link}', '${modalId}')">
                             <i class="fas fa-mobile-alt"></i> 앱에서 열기
                         </button>
                     </div>
@@ -122,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <h4>🌐 웹에서 사용</h4>
                         </div>
                         <p>브라우저에서 바로 사용 (로그인 필요)</p>
-                        <button class="access-btn secondary" onclick="openInWeb('${link}')">
+                        <button class="access-btn secondary" onclick="openInWeb('${link}', '${modalId}')">
                             <i class="fas fa-external-link-alt"></i> 웹에서 열기
                         </button>
                     </div>
@@ -132,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h4>📱 QR 코드로 빠른 접근</h4>
                     <div class="qr-container">
                         <div class="qr-code" data-url="${link}">
-                            <canvas id="qr-${Date.now()}"></canvas>
+                            <canvas id="qr-${modalId}"></canvas>
                         </div>
                         <p>다른 기기에서 QR 코드를 스캔하세요</p>
                     </div>
@@ -155,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="badge">BEST</span>
                         </div>
                         <p>데스크톱에서는 웹 버전이 가장 편리해요</p>
-                        <button class="access-btn primary" onclick="openInWeb('${link}')">
+                        <button class="access-btn primary" onclick="openInWeb('${link}', '${modalId}')">
                             <i class="fas fa-external-link-alt"></i> 웹에서 열기
                         </button>
                     </div>
@@ -168,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p>QR 코드로 모바일에서 사용하기</p>
                         <div class="qr-container">
                             <div class="qr-code" data-url="${link}">
-                                <canvas id="qr-${Date.now()}"></canvas>
+                                <canvas id="qr-${modalId}"></canvas>
                             </div>
                             <p>모바일로 스캔해서 사용하세요</p>
                         </div>
@@ -178,39 +183,65 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 앱에서 열기 시도
-    window.tryOpenInApp = function(url) {
+    // 앱에서 열기 시도 (수정된 버전)
+    window.tryOpenInApp = function(url, modalId) {
+        console.log('Opening in app:', url); // 디버깅용
+        
         if (isIOS) {
-            // iOS 딥링크 시도
-            const deepLink = url.replace('https://chatgpt.com', 'chatgpt:');
-            window.location = deepLink;
+            // iOS 딥링크 시도 - 정확한 URL 사용
+            const iOSDeepLink = url.replace('https://chatgpt.com', 'chatgpt:');
+            console.log('iOS Deep Link:', iOSDeepLink); // 디버깅용
+            
+            // 시도 1: 딥링크
+            window.location = iOSDeepLink;
+            
             // 1.5초 후 앱이 안 열리면 웹으로
             setTimeout(() => {
                 window.open(url, '_blank');
             }, 1500);
         } else if (isAndroid) {
-            // Android Intent 시도
-            const intent = `intent://chat${url.split('chatgpt.com')[1]}#Intent;scheme=chatgpt;package=com.openai.chatgpt;end`;
-            window.location = intent;
+            // Android Intent 시도 - 정확한 URL 경로 사용
+            const gptPath = url.split('chatgpt.com')[1];
+            const androidIntent = `intent://chat${gptPath}#Intent;scheme=chatgpt;package=com.openai.chatgpt;end`;
+            console.log('Android Intent:', androidIntent); // 디버깅용
+            
+            try {
+                window.location = androidIntent;
+            } catch (e) {
+                console.log('Intent failed, opening in web');
+                window.open(url, '_blank');
+            }
+            
+            // 1.5초 후 앱이 안 열리면 웹으로
             setTimeout(() => {
                 window.open(url, '_blank');
             }, 1500);
         } else {
+            // 기타 환경에서는 웹으로
             window.open(url, '_blank');
         }
+        
         // 모달 닫기
-        document.querySelector('.access-modal')?.remove();
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
     }
 
-    // 웹에서 열기
-    window.openInWeb = function(url) {
+    // 웹에서 열기 (수정된 버전)
+    window.openInWeb = function(url, modalId) {
+        console.log('Opening in web:', url); // 디버깅용
         window.open(url, '_blank');
-        document.querySelector('.access-modal')?.remove();
+        
+        // 모달 닫기
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
     }
 
     // QR 코드 생성 (간단한 구현)
     function generateQRCode(text, canvas) {
-        // QR 코드 라이브러리가 없으므로 간단한 플레이스홀더
         const ctx = canvas.getContext('2d');
         canvas.width = 120;
         canvas.height = 120;
@@ -476,4 +507,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 웰컴 가이드 실행
     showWelcomeGuide();
+
+    // FAQ 토글 기능 추가
+    window.toggleFAQ = function(element) {
+        const faqItem = element.closest('.faq-item');
+        const answer = faqItem.querySelector('.faq-answer');
+        const icon = element.querySelector('.faq-icon');
+        
+        if (faqItem.classList.contains('active')) {
+            faqItem.classList.remove('active');
+            answer.style.maxHeight = '0';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            // 다른 FAQ 닫기
+            document.querySelectorAll('.faq-item.active').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.faq-answer').style.maxHeight = '0';
+                item.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
+            });
+            
+            // 현재 FAQ 열기
+            faqItem.classList.add('active');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
 });
